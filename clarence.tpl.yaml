@@ -1,0 +1,85 @@
+kind: "Template"
+apiVersion: "v1"
+metadata:
+  name: clarence-app
+objects:
+  - apiVersion: v1
+    kind: ImageStream
+    metadata:
+      name: gotest
+    spec:
+      tags:
+      - annotations:
+          openshift.io/imported-from: golang
+        from:
+          kind: DockerImage
+          name: golang
+        generation: null
+        importPolicy: {}
+        name: from
+    status:
+      dockerImageRepository: ""
+  - apiVersion: v1
+    kind: BuildConfig
+    metadata:
+      name: gotest
+    spec:
+      nodeSelector: null
+      output:
+        to:
+          kind: ImageStreamTag
+          name: gotest:latest
+      postCommit: {}
+      resources: {}
+      source:
+        git:
+          ref: master
+          uri: https://github.com/clarenceyou/go-test.git
+        type: Git
+        sourceSecret:
+          name: "sshsecret"
+      strategy:
+        dockerStrategy:
+          from:
+            kind: ImageStreamTag
+            name: gotest:from
+        type: Docker
+      triggers:
+      - type: ConfigChange
+      - imageChange: {}
+        type: ImageChange
+    status:
+      lastVersion: 0
+  - apiVersion: v1
+    kind: DeploymentConfig
+    metadata:
+      name: gotest
+    spec:
+      replicas: 1
+      selector:
+        deploymentconfig: gotest
+      strategy:
+        resources: {}
+      template:
+        metadata:
+          labels:
+            deploymentconfig: gotest
+        spec:
+          containers:
+          - args:
+            image: gotest
+            name: gotest
+            resources: {}
+      test: false
+      triggers:
+      - type: ConfigChange
+      - imageChangeParams:
+          automatic: true
+          containerNames:
+          - gotest
+          from:
+            kind: ImageStreamTag
+            name: gotest:latest
+        type: ImageChange
+    status: {}
+
