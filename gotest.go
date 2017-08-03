@@ -1,7 +1,7 @@
 package main
 
 import (
-	"fmt"
+	"log"
 	"time"
 )
 
@@ -10,7 +10,7 @@ func main() {
 	count := 1
 
 	for {
-		fmt.Printf("Testing go : %d\n", count)
+		log.Printf("Received GpsTransaction with key: %d", count)
 		count++
 		time.Sleep(2 * time.Second)
 	}
