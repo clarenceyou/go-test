@@ -13,7 +13,7 @@ func main() {
 
 	filter := &logutils.LevelFilter{
 		Levels: []logutils.LogLevel{"DEBUG", "INFO", "WARN", "ERROR"},
-		MinLevel: logutils.LogLevel("DEBUG"),
+		MinLevel: logutils.LogLevel("INFO"),
 		Writer: os.Stderr,
 	}
 	log.SetOutput(filter)
@@ -27,6 +27,7 @@ func main() {
 		log.Printf("[INFO] Received GpsTransaction with key: %d", count)
 		log.Printf("[WARN] Received GpsTransaction with key: %d", count)
 		log.Printf("[ERROR] Received GpsTransaction with key: %d, err: %s", count, err)
+		log.Printf("Not an error with key: %d", count)
 		log.Printf("Received GpsTransaction with key: %d", count)
 		count++
 		time.Sleep(10 * time.Second)
